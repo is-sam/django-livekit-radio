@@ -61,3 +61,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 - **Backend:** Build Docker image, push to Amazon ECR, deploy with ECS Fargate + ALB.
 - **Database:** Use Amazon RDS Postgres in production.
 - **Frontend:** Deploy `/web` folder on Netlify with environment variables.
+
+## Useful Commands
+- `pip freeze > requirements.txt` - Freeze Python package dependencies
+- `source api/venv/bin/activate` - Activate Python virtual environment
