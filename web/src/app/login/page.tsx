@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthRedirect } from '../useAuthRedirect';
 import styles from "../form.module.css";
 
 export default function Login() {
+  useAuthRedirect();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -39,7 +41,7 @@ export default function Login() {
       <form onSubmit={handleLogin} className={styles.form}>
         <input type="text" className={styles.input} placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} required />
         <input type="password" className={styles.input} placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
-        <button type="submit" className={styles.button}>LDogin</button>
+        <button type="submit" className={styles.button}>Login</button>
         {error && <p className={styles.error}>{error}</p>}
       </form>
       <p>

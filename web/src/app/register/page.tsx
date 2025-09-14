@@ -2,8 +2,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "../form.module.css";
+import { useAuthRedirect } from '../useAuthRedirect';
 
 export default function Register() {
+  useAuthRedirect();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -35,8 +37,8 @@ export default function Register() {
 
   return (
     <main className={styles.fullscreen}>
-      <header style={{width: '100%', textAlign: 'center', position: 'absolute', top: '3rem', left: 0, zIndex: 10}}>
-  <h2 style={{fontSize: '2.4rem', fontWeight: 800, color: '#fff', letterSpacing: '-2px'}}>Django Livekit Radio</h2>
+      <header className={styles.projectHeader}>
+        <h2 className={styles.projectName}>Django Livekit Radio</h2>
       </header>
       <h1 className={styles.title}>Register</h1>
       <form onSubmit={handleRegister} className={styles.form}>
