@@ -1,0 +1,47 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django
+*.sqlite3
+*.log
+
+# Node
+node_modules/
+
+# Environment
+.env
+.env.local
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# Misc
+*.bak
+*.swp
+*.swo
+
+# Frontend build
+.next/
+dist/
+build/
+
+# Coverage
+coverage/
+*.cover
+*.coverage
+
+# Static/media
+staticfiles/
+media/
