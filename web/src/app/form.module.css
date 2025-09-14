@@ -1,57 +1,19 @@
- :root {
-  --background: #050507;
-  --foreground: #f3f3f3;
-  --accent: #7fdbff;
-  --error: #ff4d4f;
-  --radius: 1.5rem;
-  --input-bg: #09090d;
-  --input-border: #7fdbff;
-  --background-gradient: linear-gradient(135deg, #050507 0%, #09090d 80%, #0a0b1a 100%);
+/* Project name header styles */
+.projectHeader {
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  top: 3rem;
+  left: 0;
+  z-index: 10;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #050507;
-    --foreground: #f3f3f3;
-    --background-gradient: linear-gradient(135deg, #050507 0%, #09090d 80%, #0a0b1a 100%);
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background-gradient);
-  font-family: Inter, Roboto, Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-a:hover {
+.projectName {
+  font-size: 2.4rem;
+  font-weight: 800;
   color: #fff;
+  letter-spacing: -2px;
 }
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
-
 .fullscreen {
   min-height: 100vh;
   width: 100vw;

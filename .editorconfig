@@ -1,0 +1,16 @@
+# EditorConfig helps developers define and maintain consistent coding styles
+# https://editorconfig.org/
+
+root = true
+
+[*.tsx]
+indent_style = space
+indent_size = 2
+
+[*.ts]
+indent_style = space
+indent_size = 2
+
+[*.js]
+indent_style = space
+indent_size = 2
