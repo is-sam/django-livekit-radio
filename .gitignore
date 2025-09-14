@@ -45,3 +45,5 @@ coverage/
 # Static/media
 staticfiles/
 media/
+
+notes.md
