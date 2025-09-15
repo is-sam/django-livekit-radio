@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { LiveKitRoom, useLocalParticipant, useRemoteParticipants, AudioTrack, TrackReference } from "@livekit/components-react";
+import { LiveKitRoom, useLocalParticipant, useRemoteParticipants, AudioTrack } from "@livekit/components-react";
 import { Mic } from "lucide-react";
+import { Track } from "livekit-client";
+type Source = "microphone" | "camera" | "screen";
 import radioStyles from "./radio.module.css";
 
 export default function RadioApp() {
@@ -168,7 +170,7 @@ function RemoteAudio() {
         const trackRef = {
           participant,
           publication: audioPub,
-          source: "microphone" as any,
+          source: Track.Source.Microphone,
         };
         return (
           <AudioTrack key={audioPub.trackSid} trackRef={trackRef} volume={1} />

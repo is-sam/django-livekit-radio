@@ -35,7 +35,7 @@ export default function Register() {
         }
         setError(errorMsg);
       }
-    } catch (err) {
+  } catch {
       setError("Network error");
     }
   }

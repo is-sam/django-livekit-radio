@@ -5,7 +5,6 @@ interface UserData {
   id: string;
   username: string;
   email?: string;
-  [key: string]: any;
 }
 
 interface AuthContextType {

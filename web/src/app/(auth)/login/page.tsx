@@ -27,7 +27,7 @@ export default function Login() {
       } else {
         setError(data.detail || "Login failed");
       }
-    } catch (err) {
+  } catch {
       setError("Network error");
     }
   }
@@ -45,7 +45,7 @@ export default function Login() {
         {error && <p className={styles.error}>{error}</p>}
       </form>
       <p>
-        Don't have an account? <a href="/register" className={styles.link}>Register</a>
+  Don&apos;t have an account? <a href="/register" className={styles.link}>Register</a>
       </p>
     </main>
   );
