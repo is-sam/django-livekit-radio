@@ -1,0 +1,73 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  min-width: 100vw;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 2rem;
+  background: #050a13;
+  color: #fff;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px #0002;
+  border-bottom: 1px solid #101a3c;
+}
+
+.navbarTitle {
+  font-weight: bold;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+}
+
+.navbarRadioAccent {
+  color: #38bdf8;
+}
+
+.navbarUser {
+  position: relative;
+  min-width: 120px;
+}
+
+.navbarUserBtn {
+  background: #101a3c;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: none;
+  transition: box-shadow 0.2s;
+}
+.navbarUserBtn.open {
+  box-shadow: 0 2px 8px #0003;
+}
+
+.navbarDropdown {
+  position: absolute;
+  right: 0;
+  top: 110%;
+  background: #fff;
+  color: #222;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px #0002;
+  min-width: 140px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.navbarLogoutBtn {
+  width: 100%;
+  background: none;
+  color: #222;
+  border: none;
+  padding: 0.8rem 1.2rem;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  border-bottom: 1px solid #eee;
+}

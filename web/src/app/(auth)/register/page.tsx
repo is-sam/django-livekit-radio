@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import styles from "../form.module.css";
+import styles from "../../form.module.css";
 import { useAuthRedirect } from '../useAuthRedirect';
 
 export default function Register() {

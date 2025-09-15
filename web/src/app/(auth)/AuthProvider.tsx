@@ -1,15 +1,24 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+interface UserData {
+  id: string;
+  username: string;
+  email?: string;
+  [key: string]: any;
+}
+
 interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
+  user: UserData | null;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   token: null,
   isAuthenticated: false,
+  user: null,
   logout: () => {},
 });
 
@@ -25,6 +34,7 @@ function isJwtExpired(token: string | null): boolean {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -32,20 +42,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!storedToken || isJwtExpired(storedToken)) {
       localStorage.removeItem("token");
       setToken(null);
+      setUser(null);
       router.push("/login");
     } else {
       setToken(storedToken);
     }
   }, [router]);
 
+  useEffect(() => {
+    if (token && !user) {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => setUser(data))
+        .catch(() => setUser(null));
+    } else if (!token) {
+      setUser(null);
+    }
+  }, [token, user]);
+
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
+    setUser(null);
     router.push("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ token, isAuthenticated: !!token, logout }}>
+    <AuthContext.Provider value={{ token, isAuthenticated: !!token, user, logout }}>
       {children}
     </AuthContext.Provider>
   );

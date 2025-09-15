@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthRedirect } from '../useAuthRedirect';
-import styles from "../form.module.css";
+import styles from "../../form.module.css";
 
 export default function Login() {
   useAuthRedirect();

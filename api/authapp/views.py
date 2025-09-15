@@ -6,7 +6,6 @@ from .serializers import RegisterSerializer
 
 # Register endpoint: POST /api/auth/register/
 class RegisterView(generics.CreateAPIView):
-	print("RegisterView initialized")
 	queryset = User.objects.all()
 	serializer_class = RegisterSerializer
 	permission_classes = [permissions.AllowAny]

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { LiveKitRoom, useLocalParticipant, useRemoteParticipants, AudioTrack, TrackReference } from "@livekit/components-react";
-import { Mic } from "lucide-react"; // Or use any mic SVG/icon
+import { Mic } from "lucide-react";
+import radioStyles from "./radio.module.css";
 
 export default function RadioApp() {
   const [frequency, setFrequency] = useState("");
@@ -61,39 +62,24 @@ export default function RadioApp() {
 
   // LiveKit room logic
   return (
-    <main style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#222" }}>
-      <div style={{ background: "#333", borderRadius: "16px", padding: "32px", boxShadow: "0 4px 24px #0006", width: "320px" }}>
-        <div style={{ background: "#111", color: "#0ff", fontSize: "2.5rem", textAlign: "center", borderRadius: "8px", marginBottom: "24px", padding: "16px" }}>
-          {screen}
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginBottom: "24px" }}>
+    <div className={radioStyles.radioContainer}>
+      <div className={radioStyles.radioCard}>
+        <div className={radioStyles.radioScreen}>{screen}</div>
+        <div className={radioStyles.radioPad}>
           {[1,2,3,4,5,6,7,8,9,".",0,"R"].map((val) => (
-            <button key={val} style={{
-              fontSize: "1.5rem", padding: "16px", borderRadius: "8px", background: "#444", color: "#fff", border: "none", cursor: "pointer"
-            }} onClick={() => handleButton(val.toString())}>{val}</button>
+            <button key={val} className={radioStyles.radioBtn} onClick={() => handleButton(val.toString())}>{val}</button>
           ))}
         </div>
         {!connected ? (
-          <button
-            style={{
-              width: "100%", padding: "16px", fontSize: "1.25rem", borderRadius: "8px", background: "#0ff", color: "#222", border: "none", fontWeight: "bold", cursor: "pointer"
-            }}
-            onClick={handleConnect}
-            disabled={loading || !screen}
-          >
+          <button className={radioStyles.connectBtn} onClick={handleConnect} disabled={loading || !screen}>
             {loading ? "Connecting..." : "Connect"}
           </button>
         ) : (
-          <button
-            style={{
-              width: "100%", padding: "16px", fontSize: "1.25rem", borderRadius: "8px", background: "#f44", color: "#fff", border: "none", fontWeight: "bold", cursor: "pointer"
-            }}
-            onClick={handleDisconnect}
-          >
+          <button className={radioStyles.disconnectBtn} onClick={handleDisconnect}>
             Disconnect
           </button>
         )}
-        {error && <div style={{ color: "#f44", marginTop: "16px" }}>{error}</div>}
+        {error && <div className={radioStyles.error}>{error}</div>}
         {connected && token && (
           <LiveKitRoom
             token={token}
@@ -104,12 +90,11 @@ export default function RadioApp() {
             onDisconnected={handleDisconnect}
           >
             <PTTMic ptt={ptt} setPtt={setPtt} />
-            {/* Render remote participants' audio */}
             <RemoteAudio />
           </LiveKitRoom>
         )}
       </div>
-    </main>
+    </div>
   );
 }
 
@@ -141,9 +126,9 @@ function PTTMic({ ptt, setPtt }: { ptt: boolean, setPtt: (v: boolean) => void })
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "24px" }}>
+    <div className={radioStyles.micContainer}>
       <button
-        style={{ background: "none", border: "none", cursor: "pointer" }}
+        className={radioStyles.micButton}
         onMouseDown={() => { setPtt(true); setMicEnabled(true); }}
         onMouseUp={() => { setPtt(false); setMicEnabled(false); }}
         onMouseLeave={() => { setPtt(false); setMicEnabled(false); }}
@@ -163,7 +148,7 @@ function PTTMic({ ptt, setPtt }: { ptt: boolean, setPtt: (v: boolean) => void })
       >
         <Mic size={48} color={ptt ? "#f44" : "#888"} />
       </button>
-      <div style={{ color: ptt ? "#f44" : "#888", marginTop: "8px" }}>
+      <div className={radioStyles.micStatus}>
         {ptt ? "Transmitting" : "Mic Off"}
       </div>
     </div>
