@@ -28,7 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    'django-livekit-radio-lb-2094774503.us-east-1.elb.amazonaws.com'
+    'django-livekit-radio-lb-2094774503.us-east-1.elb.amazonaws.com',
+    '*' # debug AWS deployment
 ]
 
 INSTALLED_APPS = [
