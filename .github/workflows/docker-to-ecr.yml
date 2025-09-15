@@ -42,3 +42,20 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
+      - name: Wait for ECS deployment
+        run: |
+          aws ecs wait services-stable \
+            --cluster django-livekit-radio \
+            --services django-livekit-radio-api-service
+      - name: Run migrations
+        run: |
+          aws ecs run-task \
+            --cluster django-livekit-radio \
+            --launch-type FARGATE \
+            --task-definition django-livekit-radio-api-task \
+            --network-configuration "awsvpcConfiguration={subnets=[subnet-066cffe0cda186a15,subnet-02a9c7d8bf8de7890],securityGroups=[sg-0c9cd59940ed73fe5],assignPublicIp=ENABLED}" \
+            --overrides '{"containerOverrides":[{"name":"api","command":["python","manage.py","migrate","--noinput"]}]}'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
