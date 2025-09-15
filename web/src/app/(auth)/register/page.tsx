@@ -32,10 +32,21 @@ export default function Register() {
         let errorMsg = "Registration failed";
         if (data.detail) {
           errorMsg = data.detail;
+        } else if (typeof data === "object" && data !== null) {
+          // Collect all field errors
+          errorMsg = Object.entries(data)
+            .map(([field, messages]) => {
+              if (Array.isArray(messages)) {
+                return messages.map(msg => `${field}: ${msg}`).join("\n");
+              } else {
+                return `${field}: ${messages}`;
+              }
+            })
+            .join("\n");
         }
         setError(errorMsg);
       }
-  } catch {
+    } catch {
       setError("Network error");
     }
   }
