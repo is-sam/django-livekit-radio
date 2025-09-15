@@ -144,7 +144,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    'django-livekit-radio-lb-2094774503.us-east-1.elb.amazonaws.com'
+    'https://django-livekit-radio.netlify.app'
 ]
 
 # Prevent Django from automatically appending slashes to URLs
