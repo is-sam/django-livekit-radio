@@ -48,12 +48,15 @@ npm run dev
 SECRET_KEY=your_django_secret
 DEBUG=True
 DATABASE_URL=sqlite:///db.sqlite3
+LIVEKIT_API_KEY=your_livekit_api_key
+LIVEKIT_API_SECRET=your_livekit_api_secret
 ```
 
 ### Frontend (`.env.example`):
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_LIVEKIT_URL=wss://your-livekit-server
 ```
 
 ## Deployment

@@ -23,10 +23,10 @@ from rest_framework_simplejwt.views import (
 from radio.views import RegisterView, MeView, RadioTokenView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path("api/auth/register/", RegisterView.as_view(), name="register"),
-    path("api/auth/login/",    TokenObtainPairView.as_view(), name="login"),
-    path("api/auth/refresh/",  TokenRefreshView.as_view(),    name="token_refresh"),
-    path("api/auth/me/",       MeView.as_view(),              name="me"),
-    path("api/radio/token/",   RadioTokenView.as_view(),      name="radio_token"),
+    path('admin', admin.site.urls),
+    path("api/auth/register", RegisterView.as_view(), name="register"),
+    path("api/auth/login",    TokenObtainPairView.as_view(), name="login"),
+    path("api/auth/refresh",  TokenRefreshView.as_view(),    name="token_refresh"),
+    path("api/auth/me",       MeView.as_view(),              name="me"),
+    path("api/radio/token",   RadioTokenView.as_view(),      name="radio_token"),
 ]

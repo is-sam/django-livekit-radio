@@ -1,23 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import styles from "./page.module.css";
+import RadioApp from "./RadioApp";
+import { AuthProvider } from "./AuthProvider";
 
-export default function RadioApp() {
-  const router = useRouter();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-    }
-  }, [router]);
-
+export default function Page() {
   return (
-    <main className={styles.center}>
-      <h1>Radio Chat 2</h1>
-      <p>Welcome! The radio interface will be here soon.</p>
-    </main>
+    <AuthProvider>
+      <RadioApp />
+    </AuthProvider>
   );
 }

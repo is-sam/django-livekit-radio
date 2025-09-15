@@ -30,7 +30,7 @@ class MeView(APIView):
         })
 
 class RadioTokenView(APIView):
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         frequency = request.data.get("frequency")
