@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef, useEffect } from "react";
 import { useAuth } from "../app/(auth)/AuthProvider";
 import navbarStyles from "./navbar.module.css";
@@ -24,7 +26,9 @@ export default function NavBar() {
   return (
     <nav className={navbarStyles.navbar}>
       <div className={navbarStyles.navbarTitle}>
-        Django LiveKit <span className={navbarStyles.navbarRadioAccent}>Radio</span>
+        <a href="/">
+          Django LiveKit <span className={navbarStyles.navbarRadioAccent}>Radio</span>
+        </a>
       </div>
       {isAuthenticated && user && (
         <div ref={dropdownRef} className={navbarStyles.navbarUser}>
@@ -38,6 +42,14 @@ export default function NavBar() {
           </button>
           {dropdownOpen && (
             <div className={navbarStyles.navbarDropdown}>
+              {user.is_admin && (
+                <button
+                  onClick={() => window.location.href = "/admin"}
+                  className={navbarStyles.navbarAdminBtn}
+                >
+                  Admin Page
+                </button>
+              )}
               <button
                 onClick={logout}
                 className={navbarStyles.navbarLogoutBtn}

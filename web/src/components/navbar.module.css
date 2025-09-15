@@ -71,3 +71,17 @@
   font-size: 1rem;
   border-bottom: 1px solid #eee;
 }
+
+.navbarAdminBtn {
+  display: block;
+  width: 100%;
+  background: none;
+  color: #222;
+  text-decoration: none;
+  padding: 0.8rem 1.2rem;
+  text-align: left;
+  font-weight: 500;
+  font-size: 1rem;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}

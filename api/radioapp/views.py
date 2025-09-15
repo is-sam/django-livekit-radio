@@ -46,3 +46,16 @@ class TokenView(APIView):
             return Response({"token": jwt_token, "room": room_name})
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
+class RoomJoinLogListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAdminUser]
+    queryset = RoomJoinLog.objects.select_related('user').order_by('-joined_at')
+    def get_serializer_class(self):
+        from rest_framework import serializers
+        class LogSerializer(serializers.ModelSerializer):
+            username = serializers.CharField(source='user.username')
+            class Meta:
+                model = RoomJoinLog
+                fields = ['id', 'username', 'frequency', 'joined_at']
+        return LogSerializer
+    serializer_class = property(get_serializer_class)

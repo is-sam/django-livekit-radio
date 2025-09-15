@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -5,6 +7,7 @@ interface UserData {
   id: string;
   username: string;
   email?: string;
+  is_admin?: boolean;
 }
 
 interface AuthContextType {
@@ -56,7 +59,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
       })
         .then(res => res.ok ? res.json() : null)
-        .then(data => setUser(data))
+        .then(data => {
+          setUser(data);
+          console.log("Fetched user data:", data);
+        })
         .catch(() => setUser(null));
     } else if (!token) {
       setUser(null);
