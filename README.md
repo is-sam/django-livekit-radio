@@ -1,4 +1,3 @@
-
 # Django Livekit Radio
 
 A radio-style chat app built with Django REST Framework, LiveKit, and Next.js.
@@ -29,6 +28,7 @@ Users can register, log in, tune to a frequency, and talk with everyone on the s
 cd api
 pip install -r requirements.txt
 python manage.py migrate
+python manage.py collectstatic
 python manage.py runserver
 ```
 
