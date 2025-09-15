@@ -24,11 +24,16 @@ export default function Register() {
         body: JSON.stringify({ email, username, password }),
       });
       const data = await res.json();
-      if (res.ok && data.id) {
+      if (res.status === 201) {
         setSuccess("Registration successful! You can now login.");
         setTimeout(() => router.push("/login"), 1500);
       } else {
-        setError(data.detail || "Registration failed");
+        // Collect all error messages from DRF validation
+        let errorMsg = "Registration failed";
+        if (data.detail) {
+          errorMsg = data.detail;
+        }
+        setError(errorMsg);
       }
     } catch (err) {
       setError("Network error");
