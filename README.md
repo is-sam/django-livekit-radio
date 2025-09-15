@@ -68,3 +68,4 @@ NEXT_PUBLIC_LIVEKIT_URL=wss://your-livekit-server
 ## Useful Commands
 - `pip freeze > requirements.txt` - Freeze Python package dependencies
 - `source api/venv/bin/activate` - Activate Python virtual environment
+- `python manage.py createsuperuser` - Create admin user

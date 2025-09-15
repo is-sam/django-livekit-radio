@@ -9,5 +9,19 @@ services:
     volumes:
       - ./api:/app
     command: daphne config.asgi:application -b 0.0.0.0 -p 8000
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:16
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: django_db
+      POSTGRES_USER: django_user
+      POSTGRES_PASSWORD: django_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 volumes:
   postgres_data:
