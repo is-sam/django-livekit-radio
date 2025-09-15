@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from .models import RoomJoinLog
 from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -35,6 +36,12 @@ class TokenView(APIView):
                     room=room_name,
                 ))
             jwt_token = token.to_jwt()
+            
+            # Log the room join request
+            RoomJoinLog.objects.create(
+                user=request.user,
+                frequency=frequency
+            )
 
             return Response({"token": jwt_token, "room": room_name})
         except Exception as e:
