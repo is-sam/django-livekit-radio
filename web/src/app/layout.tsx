@@ -1,3 +1,4 @@
+import Signature from "@/components/Signature";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
@@ -45,6 +46,7 @@ export default function RootLayout({
               </div>
             </main>
           </div>
+          <Signature />
         </AuthProvider>
       </body>
     </html>
