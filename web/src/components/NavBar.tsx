@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LogIn, LogOut, Radio, Shield } from "lucide-react";
+import { LogIn, LogOut, Radio, Shield, User } from "lucide-react";
 
 import { useAuth } from "@/app/(auth)/AuthProvider";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -67,6 +67,13 @@ export default function NavBar() {
                 )}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onSelect={() => router.push("/profile")}
+                className="focus:bg-cyan-500/10 focus:text-cyan-100"
+              >
+                <User className="mr-2 h-4 w-4" aria-hidden="true" />
+                <span>Profile</span>
+              </DropdownMenuItem>
               {user.is_admin && (
                 <DropdownMenuItem onSelect={() => router.push("/admin")} className="focus:bg-cyan-500/10 focus:text-cyan-100">
                   <Shield className="mr-2 h-4 w-4" aria-hidden="true" />

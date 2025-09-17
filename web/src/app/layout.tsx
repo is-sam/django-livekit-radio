@@ -31,7 +31,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 font-sans text-foreground antialiased",
+          "min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 bg-fixed bg-no-repeat font-sans text-foreground antialiased",
           geistSans.variable,
           geistMono.variable,
         )}
