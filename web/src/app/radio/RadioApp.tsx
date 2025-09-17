@@ -1,21 +1,23 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import SevenSegmentDisplay from "./SevenSegmentDisplay";
 import { LiveKitRoom, useLocalParticipant, useRemoteParticipants, AudioTrack } from "@livekit/components-react";
 import { Mic } from "lucide-react";
 import type { LocalParticipant } from "livekit-client";
 import { Track } from "livekit-client";
-
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const keypadKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "R"];
 
 export default function RadioApp() {
   const [screen, setScreen] = useState("88.0");
+  const [button, setButton] = useState<string | null>(null);
+  const [buttonEvent, setButtonEvent] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [token, setToken] = useState("");
@@ -25,24 +27,11 @@ export default function RadioApp() {
 
   const keypad = useMemo(() => keypadKeys, []);
 
+  // Move all button logic to display
+  // Only send button to display
   const handleButton = (value: string) => {
-    if (value === "R") {
-      setScreen("88.0");
-      return;
-    }
-
-    if (value === ".") {
-      if (!screen.includes(".")) {
-        const next = `${screen}${value}`;
-        setScreen(next);
-      }
-      return;
-    }
-
-    if (screen.length >= 6 || connected) return;
-
-    const next = screen === "88.0" ? value : `${screen}${value}`;
-    setScreen(next);
+    setButton(value);
+    setButtonEvent((e) => e + 1);
   };
 
   const handleConnect = async () => {
@@ -80,17 +69,17 @@ export default function RadioApp() {
   };
 
   return (
-    <section className="flex w-full justify-center">
-      <div className="w-full max-w-xl space-y-6">
-        <Card className="w-full border-white/10 bg-slate-900/70 text-white shadow-2xl backdrop-blur">
+    <section className="flex w-full justify-center px-4">
+      <div className="w-full max-w-lg space-y-5">
+        <Card className="w-full border border-white/10 bg-slate-950/80 text-white shadow-2xl backdrop-blur-lg">
           <CardHeader className="space-y-4 text-center">
-            <Badge className="mx-auto w-fit bg-cyan-500/10 text-cyan-300">Frequency</Badge>
-            <CardTitle className="text-4xl font-semibold tracking-[0.4rem] text-cyan-200">
-              {screen}
-            </CardTitle>
+            <Badge className="mx-auto w-fit border border-emerald-400/30 bg-emerald-500/10 text-emerald-200">
+              Frequency
+            </Badge>
+            <SevenSegmentDisplay connected={connected} value={screen} button={button} buttonEvent={buttonEvent} onChange={setScreen} />
           </CardHeader>
-          <CardContent className="space-y-8">
-            <div className="grid grid-cols-3 gap-3">
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
               {keypad.map((key) => (
                 <Button
                   key={key}
@@ -99,7 +88,7 @@ export default function RadioApp() {
                   onClick={() => handleButton(key)}
                   disabled={loading || connected}
                   className={cn(
-                    "h-14 rounded-xl text-lg font-semibold tracking-wider shadow-sm transition-transform",
+                    "h-12 rounded-xl text-base font-semibold tracking-wide shadow-sm transition-transform",
                     !loading && !connected && "hover:-translate-y-0.5",
                   )}
                 >
@@ -128,10 +117,10 @@ export default function RadioApp() {
               )}
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6">
-              <div className="mb-4 flex items-center justify-center gap-2 text-base font-medium text-slate-100">
-                <Mic className="h-4 w-4 text-cyan-300" aria-hidden="true" />
-                Push to talk
+            <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-5 shadow-inner">
+              <div className="mb-3 flex items-center justify-center gap-2 text-sm font-medium uppercase tracking-widest text-slate-200/80">
+                <Mic className="h-4 w-4 text-emerald-300" aria-hidden="true" />
+                Push To Talk
               </div>
               <PTTMic
                 ptt={ptt}

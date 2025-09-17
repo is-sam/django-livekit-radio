@@ -1,3 +1,15 @@
+/* Use local Seven Segment.ttf font */
+@font-face {
+  font-family: 'SevenSegment';
+  src: url('/Seven Segment.ttf') format('truetype');
+  font-display: swap;
+}
+
+/* Seven segment font utility */
+.font-seven-segment {
+  font-family: 'SevenSegment', 'Courier New', Courier, monospace;
+  letter-spacing: 0.08em;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
