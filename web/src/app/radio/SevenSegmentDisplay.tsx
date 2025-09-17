@@ -3,12 +3,11 @@ import React, { useState, useEffect } from "react";
 // Helper to format the frequency string as 3 digits, dot, 2 decimals
 function formatFrequencyDisplay(value: string) {
   // Remove all non-digit and non-dot chars
-  let sanitized = value.replace(/[^0-9.]/g, "");
+  const sanitized = value.replace(/[^0-9.]/g, "");
   const hasDot = sanitized.includes(".");
-  let [intPart, decPart = ""] = sanitized.split(".");
+  const [intPart, decPart = ""] = sanitized.split(".");
   // Pad int part to 3, dec part to 2
-  intPart = intPart.slice(0, 3); // never more than 3 digits
-  const intPad = intPart.padStart(3, "0");
+  const intPad = intPart.slice(0, 3).padStart(3, "0");
   const decPad = (decPart + "00").slice(0, 2);
   return { intPad, decPad, hasDot };
 }
@@ -43,8 +42,8 @@ export default function SevenSegmentDisplay({ connected, value = DEFAULT_SCREEN,
           next = prev + ".";
         }
       } else {
-        let sanitized = prev.replace(/[^0-9.]/g, "");
-        let [intPart, decPart = ""] = sanitized.split(".");
+        const sanitized = prev.replace(/[^0-9.]/g, "");
+        const [intPart, decPart = ""] = sanitized.split(".");
         if (!prev.includes(".")) {
           if (intPart.length >= 3) return prev;
         } else {
@@ -56,7 +55,7 @@ export default function SevenSegmentDisplay({ connected, value = DEFAULT_SCREEN,
       if (onChange) onChange(next);
       return next;
     });
-  }, [buttonEvent]);
+  }, [buttonEvent, button, connected, onChange]);
 
   const { intPad, decPad, hasDot } = formatFrequencyDisplay(screen);
   // Dot is colored only if user entered a dot, or if connected and no decimals (simulate fixed freq)
