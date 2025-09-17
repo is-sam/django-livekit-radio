@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useAuth } from "../app/(auth)/AuthProvider";
 import navbarStyles from "./navbar.module.css";
-import { User2 } from "lucide-react";
+import { Link, User2 } from "lucide-react";
 
 export default function NavBar() {
   const { isAuthenticated, logout, user } = useAuth();
@@ -26,9 +26,9 @@ export default function NavBar() {
   return (
     <nav className={navbarStyles.navbar}>
       <div className={navbarStyles.navbarTitle}>
-        <a href="/">
+        <Link href="/" className={navbarStyles.navbarTitleLink}>
           Django LiveKit <span className={navbarStyles.navbarRadioAccent}>Radio</span>
-        </a>
+        </Link>
       </div>
       {isAuthenticated && user && (
         <div ref={dropdownRef} className={navbarStyles.navbarUser}>
