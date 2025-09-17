@@ -1,12 +1,9 @@
 "use client";
 
-import RadioApp from "../components/RadioApp";
-import PageLayout from "./PageLayout";
+import { useRouter } from "next/navigation";
 
-export default function Page() {
-  return (
-    <PageLayout>
-      <RadioApp />
-    </PageLayout>
-  );
+export default function RootPage() {
+  const router = useRouter();
+
+  router.replace("/radio");
 }

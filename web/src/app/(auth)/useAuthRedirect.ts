@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { useAuth } from '@/app/(auth)/AuthProvider';
+
 export function useAuthRedirect() {
   const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
+
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      if (token) {
-        router.replace('/');
-      }
+    if (isLoading) return;
+    if (isAuthenticated) {
+      router.replace('/');
     }
-  }, [router]);
+  }, [isAuthenticated, isLoading, router]);
 }

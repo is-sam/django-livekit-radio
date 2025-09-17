@@ -1,5 +1,23 @@
 "use client";
+
 import { useEffect, useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 interface Log {
   id: number;
@@ -16,11 +34,11 @@ export default function RadioLogs() {
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/radio/logs`, {
       headers: {
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
-      .then(res => res.ok ? res.json() : Promise.reject(res))
-      .then(data => {
+      .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+      .then((data) => {
         setLogs(data);
         setLoading(false);
       })
@@ -30,34 +48,57 @@ export default function RadioLogs() {
       });
   }, []);
 
-  if (loading) return <p>Loading logs...</p>;
-  if (error) return <p>{error}</p>;
+  const hasEntries = logs.length > 0;
 
   return (
-    <section>
-      <h2>Radio Logs</h2>
-      {logs.length === 0 ? (
-        <p>No logs found.</p>
-      ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Frequency</th>
-              <th>Joined At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {logs.map(log => (
-              <tr key={log.id}>
-                <td>{log.username}</td>
-                <td>{log.frequency}</td>
-                <td>{new Date(log.joined_at).toLocaleString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </section>
+    <Card className="border-white/10 bg-slate-900/70 text-white shadow-2xl backdrop-blur">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold">Radio logs</CardTitle>
+        <CardDescription className="text-sm text-slate-200/70">
+          Historical join events for every LiveKit frequency.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {loading && (
+          <p className="text-sm text-muted-foreground">Loading logs…</p>
+        )}
+        {!loading && error && (
+          <Alert variant="destructive" className="mt-2 border-destructive bg-destructive/10">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        {!loading && !error && !hasEntries && (
+          <p className="text-sm text-muted-foreground">No logs found.</p>
+        )}
+        {!loading && !error && hasEntries && (
+          <Table className="mt-2 text-slate-200">
+            <TableHeader>
+              <TableRow className="border-white/5">
+                <TableHead>User</TableHead>
+                <TableHead>Frequency</TableHead>
+                <TableHead>Joined at</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {logs.map((log) => (
+                <TableRow key={log.id} className="border-white/5">
+                  <TableCell className="font-medium text-white">
+                    {log.username ?? `User #${log.id}`}
+                  </TableCell>
+                  <TableCell>
+                    <Badge className="bg-cyan-500/10 text-cyan-300">
+                      {log.frequency.toFixed(1)} MHz
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-sm text-slate-300/80">
+                    {new Date(log.joined_at).toLocaleString()}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </CardContent>
+    </Card>
   );
 }

@@ -7,9 +7,12 @@ export default function LogoutPage() {
 
   useEffect(() => {
     localStorage.removeItem("token");
-    // Add any other cleanup logic here
-    router.replace("/login"); // Redirect to login page
+    router.replace("/login");
   }, [router]);
 
-  return <div>Logging out...</div>;
+  return (
+    <section className="flex min-h-[50vh] items-center justify-center text-sm text-muted-foreground">
+      Logging out…
+    </section>
+  );
 }
