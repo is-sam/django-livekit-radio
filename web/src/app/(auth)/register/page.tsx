@@ -53,9 +53,6 @@ export default function Register() {
 
   return (
     <main className={styles.fullscreen}>
-      <header className={styles.projectHeader}>
-        <h2 className={styles.projectName}>Django Livekit Radio</h2>
-      </header>
       <h1 className={styles.title}>Register</h1>
       <form onSubmit={handleRegister} className={styles.form}>
         <input type="text" className={styles.input} placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} required />

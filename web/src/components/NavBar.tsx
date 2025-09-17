@@ -3,7 +3,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useAuth } from "../app/(auth)/AuthProvider";
 import navbarStyles from "./navbar.module.css";
-import { Link, User2 } from "lucide-react";
+import { User2 } from "lucide-react";
+import Link from "next/link";
 
 export default function NavBar() {
   const { isAuthenticated, logout, user } = useAuth();

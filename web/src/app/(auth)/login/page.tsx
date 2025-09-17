@@ -34,9 +34,6 @@ export default function Login() {
 
   return (
     <main className={styles.fullscreen}>
-      <header className={styles.projectHeader}>
-        <h2 className={styles.projectName}>Django Livekit Radio</h2>
-      </header>
       <h1 className={styles.title}>Login</h1>
       <form onSubmit={handleLogin} className={styles.form}>
         <input type="text" className={styles.input} placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} required />
