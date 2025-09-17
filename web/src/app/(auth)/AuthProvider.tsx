@@ -45,6 +45,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const setAuthToken = (value: string | null) => {
+    if (value && isJwtExpired(value)) {
+      value = null;
+    }
     if (typeof window !== "undefined") {
       if (value) {
         localStorage.setItem("token", value);
@@ -75,8 +78,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!token) {
-      setUser(null);
+    if (!token || isJwtExpired(token)) {
+      setAuthToken(null);
       setIsLoading(false);
       return;
     }
@@ -109,13 +112,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, [token]);
 
+  const isAuthenticated = !!token && !isJwtExpired(token);
+
   const logout = () => {
     setAuthToken(null);
     router.push("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ token, isAuthenticated: !!token, user, isLoading, setAuthToken, logout }}>
+    <AuthContext.Provider value={{ token, isAuthenticated, user, isLoading, setAuthToken, logout }}>
       {children}
     </AuthContext.Provider>
   );
