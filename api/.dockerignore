@@ -9,4 +9,3 @@ media/
 .env
 .git
 .gitignore
-migrations/
