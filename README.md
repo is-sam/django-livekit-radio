@@ -1,7 +1,12 @@
 # Django Livekit Radio
 
 A radio-style chat app built with Django REST Framework, LiveKit, and Next.js.
+
 Users can register, log in, tune to a frequency, and talk with everyone on the same channel (push-to-talk style).
+
+A profile page is available for users to update their information or password.
+
+Admin users can access the administration panel and see the list of room joins logs.
 
 ## Features
 
@@ -14,15 +19,41 @@ Users can register, log in, tune to a frequency, and talk with everyone on the s
 
 ## Tech Stack
 
-- **Backend:** Django, DRF, SimpleJWT
-- **Realtime:** LiveKit server SDK (token minting) + LiveKit React client
-- **Frontend:** Next.js + `@livekit/components-react`
-- **Database:** SQLite for dev, Postgres (RDS) for prod
-- **Deployment:** Docker + AWS ECS Fargate (API) / Netlify (frontend)
+- **Backend:** Django, Django Rest Framework, SimpleJWT, LiveKit Server SDK
+- **Frontend:** Next.js, `@livekit/components-react`, Shadcn/ui, Tailwind CSS
+- **Database:** Postgres (RDS) for prod, Docker for local dev
+- **Deployment:**  [GitHub Actions](.github/workflows/deploy-production-aws-netlify.yml),  Docker, AWS ECR + ECS Fargate + ALB (API) + Netlify (frontend)
 
 ## Quickstart
 
+### Environment Variables
+
+- Backend ([.env.example](api/.env.example)):
+
+```env
+SECRET_KEY=your_django_secret
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+DATABASE_URL=sqlite:///db.sqlite3
+LIVEKIT_API_KEY=your_livekit_api_key
+LIVEKIT_API_SECRET=your_livekit_api_secret
+```
+
+- Frontend ([.env.example](web/.env.example)):
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_LIVEKIT_URL=wss://your-livekit-server
+```
 ### Backend
+
+- With Docker
+
+```bash
+docker-compose up -d
+```
+
+- Without Docker
 
 ```bash
 cd api
@@ -40,32 +71,9 @@ npm install
 npm run dev
 ```
 
-## Environment Variables
-
-### Backend (`.env.example`):
-
-```env
-SECRET_KEY=your_django_secret
-DEBUG=True
-DATABASE_URL=sqlite:///db.sqlite3
-LIVEKIT_API_KEY=your_livekit_api_key
-LIVEKIT_API_SECRET=your_livekit_api_secret
-```
-
-### Frontend (`.env.example`):
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-NEXT_PUBLIC_LIVEKIT_URL=wss://your-livekit-server
-```
-
-## Deployment
-
-- **Backend:** Build Docker image, push to Amazon ECR, deploy with ECS Fargate + ALB.
-- **Database:** Use Amazon RDS Postgres in production.
-- **Frontend:** Deploy `/web` folder on Netlify with environment variables.
-
 ## Useful Commands
 - `pip freeze > requirements.txt` - Freeze Python package dependencies
 - `source api/venv/bin/activate` - Activate Python virtual environment
 - `python manage.py createsuperuser` - Create admin user
+- `python manage.py runserver` - Run Django development server
+- `python manage.py makemigrations` - Create new migrations based on the changes you have made to your models
