@@ -85,4 +85,6 @@ jobs:
           fi
       - name: Trigger Netlify build
         if: steps.web_changes.outputs.web_changed == 'true'
-        run: curl -X POST -d '{}' https://api.netlify.com/build_hooks/68cb8f53b53921b46fd591dc
+        run: curl -X POST -d '{}' "$NETLIFY_BUILD_HOOK_URL"
+        env:
+          NETLIFY_BUILD_HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
