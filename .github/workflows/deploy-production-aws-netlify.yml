@@ -88,14 +88,45 @@ jobs:
         run: curl -X POST -d '{}' "$NETLIFY_BUILD_HOOK_URL"
         env:
           NETLIFY_BUILD_HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
+      - name: Get latest Netlify deploy ID
+        if: steps.web_changes.outputs.web_changed == 'true'
+        id: get_deploy_id
+        run: |
+          DEPLOY_ID=$(curl -s -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" \
+            "https://api.netlify.com/api/v1/sites/$NETLIFY_SITE_ID/deploys" | jq -r '.[0].id')
+          echo "Latest deploy ID: $DEPLOY_ID"
+          echo "deploy_id=$DEPLOY_ID" >> $GITHUB_OUTPUT
+        env:
+          NETLIFY_ACCESS_TOKEN: ${{ secrets.NETLIFY_ACCESS_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      - name: Wait for latest Netlify deploy to be ready
+        if: steps.web_changes.outputs.web_changed == 'true'
+        id: wait_for_deploy
+        run: |
+          DEPLOY_ID="${{ steps.get_deploy_id.outputs.deploy_id }}"
+          echo "Waiting for Netlify deploy $DEPLOY_ID to be ready..."
+          for i in {1..30}; do
+            DEPLOY_STATE=$(curl -s -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" \
+              "https://api.netlify.com/api/v1/sites/$NETLIFY_SITE_ID/deploys/$DEPLOY_ID" | jq -r '.state')
+            echo "Deploy $DEPLOY_ID state: $DEPLOY_STATE"
+            if [ "$DEPLOY_STATE" = "ready" ]; then
+              echo "Deploy is ready."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Timed out waiting for Netlify deploy to be ready." >&2
+          exit 1
+        env:
+          NETLIFY_ACCESS_TOKEN: ${{ secrets.NETLIFY_ACCESS_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
       - name: Publish latest Netlify deploy
         if: steps.web_changes.outputs.web_changed == 'true'
         run: |
-          SITE_ID="89b82761-2f1c-4fc7-9b22-cc251a509274"
-          DEPLOY_ID=$(curl -s -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" \
-            "https://api.netlify.com/api/v1/sites/$SITE_ID/deploys" | jq -r '.[0].id')
-          echo "Latest deploy ID: $DEPLOY_ID"
+          DEPLOY_ID="${{ steps.get_deploy_id.outputs.deploy_id }}"
+          echo "Publishing Netlify deploy $DEPLOY_ID..."
           curl -X POST -H "Authorization: Bearer $NETLIFY_ACCESS_TOKEN" \
-            "https://api.netlify.com/api/v1/sites/$SITE_ID/deploys/$DEPLOY_ID/restore"
+            "https://api.netlify.com/api/v1/sites/$NETLIFY_SITE_ID/deploys/$DEPLOY_ID/restore"
         env:
           NETLIFY_ACCESS_TOKEN: ${{ secrets.NETLIFY_ACCESS_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
