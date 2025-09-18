@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { getAuthHeaders } from "@/lib/utils";
 
 interface UserData {
   id: string;
@@ -24,12 +25,13 @@ const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   user: null,
   isLoading: true,
-  setAuthToken: () => {},
-  logout: () => {},
+  setAuthToken: () => { },
+  logout: () => { },
 });
 
 function isJwtExpired(token: string | null): boolean {
   if (!token) return true;
+
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
     return payload.exp * 1000 < Date.now();
@@ -44,72 +46,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const setAuthToken = (value: string | null) => {
-    if (value && isJwtExpired(value)) {
-      value = null;
+  const invalidateAuth = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    setUser(null);
+    setIsLoading(false);
+  };
+
+  const checkTokenValidity = (token: string | null) => {
+    if (!token || isJwtExpired(token)) {
+      invalidateAuth();
+      return false;
     }
-    if (typeof window !== "undefined") {
-      if (value) {
-        localStorage.setItem("token", value);
-      } else {
-        localStorage.removeItem("token");
-      }
-    }
-    setToken(value);
-    if (!value) {
-      setUser(null);
-    }
+    return true;
+  };
+
+  const setAuthToken = (token: string | null) => {
+    if (!checkTokenValidity(token)) return;
+
+    localStorage.setItem("token", token as string);
+    setToken(token);
   };
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    const storedToken = localStorage.getItem("token");
-    if (!storedToken || isJwtExpired(storedToken)) {
-      if (storedToken) {
-        localStorage.removeItem("token");
-      }
-      setToken(null);
-      setIsLoading(false);
-      return;
-    }
-    setToken(storedToken);
+    setIsLoading(true);
+    const token = localStorage.getItem("token");
+
+    if (!checkTokenValidity(token)) return;
+
+    setToken(token);
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    if (!token || isJwtExpired(token)) {
-      setAuthToken(null);
-      setIsLoading(false);
-      return;
-    }
-
-    let cancelled = false;
     setIsLoading(true);
+    const token = localStorage.getItem("token");
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (cancelled) return;
-        setUser(data);
+    if (!checkTokenValidity(token)) return;
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, { headers: getAuthHeaders() })
+      .then((res) => {
+        if (res.status === 401) throw new Error("401 Unauthorized");
+        return res.ok ? res.json() : null;
       })
+      .then((data) => setUser(data))
       .catch(() => {
-        if (cancelled) return;
-        setAuthToken(null);
+        invalidateAuth();
       })
       .finally(() => {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       });
-
-    return () => {
-      cancelled = true;
-    };
   }, [token]);
 
   const isAuthenticated = !!token && !isJwtExpired(token);

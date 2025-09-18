@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn, getAuthHeaders } from "@/lib/utils";
 
 const keypadKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "R"];
 
@@ -38,13 +38,12 @@ export default function RadioApp() {
     setLoading(true);
     setError("");
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
-      const res = await fetch(`${apiUrl}/api/radio/token`, {
-        method: "POST",
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/radio/token`, {
         headers: {
+          ...getAuthHeaders(),
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
+        method: "POST",
         body: JSON.stringify({ frequency: parseFloat(screen) }),
       });
       const data = await res.json();

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getAuthHeaders } from "@/lib/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Card,
@@ -19,27 +20,37 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
+
 interface Log {
   id: number;
   username: string;
-  frequency: number;
+  frequency: string;
   joined_at: string;
+}
+
+interface PaginatedLogs {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Log[];
 }
 
 export default function RadioLogs() {
   const [logs, setLogs] = useState<Log[]>([]);
+  const [count, setCount] = useState<number>(0);
+  const [next, setNext] = useState<string | null>(null);
+  const [previous, setPrevious] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/radio/logs`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/radio/logs`, { headers: getAuthHeaders() })
       .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-      .then((data) => {
-        setLogs(data);
+      .then((data: PaginatedLogs) => {
+        setLogs(data.results);
+        setCount(data.count);
+        setNext(data.next);
+        setPrevious(data.previous);
         setLoading(false);
       })
       .catch(() => {
@@ -87,7 +98,7 @@ export default function RadioLogs() {
                   </TableCell>
                   <TableCell>
                     <Badge className="bg-cyan-500/10 text-cyan-300">
-                      {log.frequency.toFixed(1)} MHz
+                      {Number(log.frequency).toFixed(2)} MHz
                     </Badge>
                   </TableCell>
                   <TableCell className="text-sm text-slate-300/80">
