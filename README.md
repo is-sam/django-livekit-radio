@@ -22,7 +22,7 @@ Admin users can access the administration panel and see the list of room joins l
 - **Backend:** Django, Django Rest Framework, SimpleJWT, LiveKit Server SDK
 - **Frontend:** Next.js, `@livekit/components-react`, Shadcn/ui, Tailwind CSS
 - **Database:** Postgres (RDS) for prod, Docker for local dev
-- **Deployment:**  [GitHub Actions](.github/workflows/deploy-production-aws-netlify.yml),  Docker, AWS ECR + ECS Fargate + ALB (API) + Netlify (frontend)
+- **Deployment:**  [GitHub Actions CI/CD Documentation](GITHUB_ACTIONS_CICD.md),  Docker, AWS ECR + ECS Fargate + ALB (API) + Netlify (frontend)
 
 ## Quickstart
 
