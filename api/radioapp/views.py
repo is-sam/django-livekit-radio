@@ -1,34 +1,39 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from .models import RoomJoinLog
-from rest_framework import generics, permissions
+from .serializers import RoomJoinLogSerializer, FrequencyTokenSerializer
+from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from livekit import api
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
 
 class TokenView(APIView):
+    """
+    API endpoint to generate a LiveKit access token for a user to join a room based on frequency.
+    Requires authentication.
+    """
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        frequency = request.data.get("frequency")
-        try:
-            frequency = float(frequency)
-        except (TypeError, ValueError):
-            return Response({"error": "Invalid frequency"}, status=400)
+        """
+        Generate a LiveKit access token for the authenticated user.
+        Expects 'frequency' in the request data.
+        """
+        serializer = FrequencyTokenSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        api_key = os.getenv("LIVEKIT_API_KEY")
-        api_secret = os.getenv("LIVEKIT_API_SECRET")
+        frequency = serializer.validated_data['frequency']
+
+        api_key = getattr(settings, "LIVEKIT_API_KEY", None)
+        api_secret = getattr(settings, "LIVEKIT_API_SECRET", None)
         if not api_key or not api_secret:
-            return Response({"error": "LiveKit API credentials not set"}, status=500)
+            return Response({"error": "LiveKit API credentials not set"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        room_name = f"freq-{frequency}"
 
         try:
             identity = str(request.user.id)
-            room_name = f"freq-{frequency}"
-
-            token = api.AccessToken() \
+            token = api.AccessToken(api_key=api_key, api_secret=api_secret) \
                 .with_identity(identity) \
                 .with_name(request.user.username) \
                 .with_grants(api.VideoGrants(
@@ -36,26 +41,24 @@ class TokenView(APIView):
                     room=room_name,
                 ))
             jwt_token = token.to_jwt()
-            
+
             # Log the room join request
             RoomJoinLog.objects.create(
                 user=request.user,
                 frequency=frequency
             )
 
-            return Response({"token": jwt_token, "room": room_name})
-        except Exception as e:
-            return Response({"error": str(e)}, status=500)
+            return Response({"token": jwt_token, "room": room_name}, status=status.HTTP_200_OK)
+        except api.LiveKitException as e:
+            return Response({"error": str(e)}, status=status.HTTP_502_BAD_GATEWAY)
+        except Exception:
+            return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class RoomJoinLogListView(generics.ListAPIView):
+    """
+    Admin-only endpoint to list all room join logs, paginated and ordered by join time.
+    """
     permission_classes = [permissions.IsAdminUser]
-    queryset = RoomJoinLog.objects.select_related('user').order_by('-joined_at')
-    def get_serializer_class(self):
-        from rest_framework import serializers
-        class LogSerializer(serializers.ModelSerializer):
-            username = serializers.CharField(source='user.username')
-            class Meta:
-                model = RoomJoinLog
-                fields = ['id', 'username', 'frequency', 'joined_at']
-        return LogSerializer
-    serializer_class = property(get_serializer_class)
+    queryset = RoomJoinLog.objects.select_related('user')
+    serializer_class = RoomJoinLogSerializer
