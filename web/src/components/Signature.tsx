@@ -1,3 +1,5 @@
+const PRICE = 120;
+
 export default function Signature() {
   return (
     <div style={{
@@ -25,6 +27,9 @@ export default function Signature() {
         padding: 0,
         textShadow: '0 1px 4px rgba(0,0,0,0.25)',
       }}>
+        <span style={{color:'#10b981',fontWeight:600,marginRight:'8px'}}>
+          ${PRICE}
+        </span>
         Made with <span style={{color:'#e25555',fontSize:'1.1em'}}>❤️</span> by{' '}
         <a
           href="https://github.com/is-sam"
